@@ -1,0 +1,1 @@
+ALTER TABLE `sketches` ADD `likes` integer DEFAULT 0 NOT NULL;
