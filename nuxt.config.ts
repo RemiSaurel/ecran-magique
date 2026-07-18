@@ -15,6 +15,36 @@ export default defineNuxtConfig({
     },
     blob: { driver: 'cloudflare-r2', bucketName: 'ecran-magique' },
   },
+  nitro: {
+    preset: 'cloudflare-module',
+    cloudflare: {
+      wrangler: {
+        name: 'ecran-magique',
+        account_id: 'db54280ff6215ce8bc87c283d47ec027',
+        compatibility_flags: ['nodejs_compat'],
+        observability: {
+          logs: {
+            enabled: true,
+            head_sampling_rate: 1,
+            invocation_logs: true,
+            persist: true,
+          },
+        },
+        d1_databases: [
+          {
+            binding: 'DB',
+            database_name: 'ecran-magique',
+            database_id: '51a892b4-7b15-4ff3-8161-a0831cee5e5c',
+            migrations_table: '_hub_migrations',
+            migrations_dir: '.output/server/db/migrations',
+          },
+        ],
+        r2_buckets: [
+          { binding: 'BLOB', bucket_name: 'ecran-magique' },
+        ],
+      },
+    },
+  },
   css: ['~/assets/css/main.css', 'lenis/dist/lenis.css'],
   vite: {
     plugins: [tailwindcss()],
