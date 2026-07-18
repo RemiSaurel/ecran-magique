@@ -25,6 +25,7 @@
     "@tailwindcss/vite": "^4.1.0",
     "drizzle-kit": "^0.31.10",
     "tailwindcss": "^4.1.0",
-    "typescript": "^5.8.0"
+    "typescript": "^5.8.0",
+    "wrangler": "^4.12.0"
   }
 }
