@@ -2,6 +2,7 @@
   "name": "ecran-magique",
   "private": true,
   "type": "module",
+  "packageManager": "pnpm@11.12.0",
   "scripts": {
     "dev": "nuxt dev",
     "build": "nuxt build",

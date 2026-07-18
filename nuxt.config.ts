@@ -6,16 +6,14 @@ export default defineNuxtConfig({
   // means the entrance animation plays as soon as the page loads
   ssr: false,
   modules: ['motion-v/nuxt', '@vueuse/nuxt', '@nuxthub/core', 'lenis/nuxt'],
-  // Local dev uses .data/ emulation automatically. For the Cloudflare deploy,
-  // create the resources (npx wrangler d1 create ecran-magique / npx wrangler
-  // r2 bucket create ecran-magique) and fill in the connection info below:
-  // hub: {
-  //   db: { dialect: 'sqlite', driver: 'd1', connection: { databaseId: '<database-id>' } },
-  //   blob: { driver: 'cloudflare-r2', bucketName: 'ecran-magique' },
-  // },
+  // NuxtHub uses local .data/ emulation in dev. Production uses Cloudflare D1 + R2.
   hub: {
-    db: 'sqlite',
-    blob: true,
+    db: {
+      dialect: 'sqlite',
+      driver: 'd1',
+      connection: { databaseId: '51a892b4-7b15-4ff3-8161-a0831cee5e5c' },
+    },
+    blob: { driver: 'cloudflare-r2', bucketName: 'ecran-magique' },
   },
   css: ['~/assets/css/main.css', 'lenis/dist/lenis.css'],
   vite: {
