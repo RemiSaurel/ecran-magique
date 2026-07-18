@@ -25,6 +25,8 @@ const viewOptions: { value: ViewMode, label: string }[] = [
 // Floating preview that chases the cursor in list view (fine pointers only)
 const finePointer = useMediaQuery('(pointer: fine)')
 const previewEnabled = computed(() => finePointer.value && !prefersReduced.value)
+// Touch devices can't hover — show an inline thumbnail in each row instead
+const showListThumbs = computed(() => !finePointer.value)
 
 const activeIndex = ref<number | null>(null)
 const previewOpen = ref(false)
@@ -62,19 +64,19 @@ function closePreview() {
 
 watch(view, closePreview)
 
-// Double-click the line → Instagram-style heart burst at the click point
+// Double-click / double-tap the line → Instagram-style heart burst at the tap point
 const bursts = ref<{ id: number, sketchId: number, x: number, y: number }[]>([])
 let burstId = 0
 
-function onListDoubleClick(event: MouseEvent, sketch: Sketch) {
+const { onDoubleClick, onTouchEnd } = useDoubleTap((point, event, sketch: Sketch) => {
   const rect = (event.currentTarget as HTMLElement).getBoundingClientRect()
   const id = ++burstId
-  bursts.value.push({ id, sketchId: sketch.id, x: event.clientX - rect.left, y: event.clientY - rect.top })
+  bursts.value.push({ id, sketchId: sketch.id, x: point.clientX - rect.left, y: point.clientY - rect.top })
   like(sketch)
   window.setTimeout(() => {
     bursts.value = bursts.value.filter(b => b.id !== id)
   }, 850)
-}
+})
 
 function timeAgo(value: string) {
   const diff = Date.now() - new Date(value).getTime()
@@ -199,14 +201,23 @@ function timeAgo(value: string) {
         <motion.li
           v-for="(sketch, i) in sketches"
           :key="sketch.id"
-          class="group relative flex cursor-default items-center gap-3 border-b border-stone-900/10 py-4 select-none sm:gap-5 sm:py-5"
+          class="group relative flex cursor-default touch-manipulation items-center gap-3 border-b border-stone-900/10 py-4 select-none sm:gap-5 sm:py-5"
           :initial="prefersReduced ? { opacity: 0 } : { opacity: 0, y: 14 }"
           :animate="prefersReduced ? { opacity: 1 } : { opacity: 1, y: 0 }"
           :transition="{ type: 'spring', stiffness: 280, damping: 26, delay: Math.min(i * 0.035, 0.4) }"
           @mouseenter="openPreview(i)"
-          @dblclick="onListDoubleClick($event, sketch)"
+          @dblclick="onDoubleClick($event, sketch)"
+          @touchend="onTouchEnd($event, sketch)"
         >
           <span class="w-7 shrink-0 text-[11px] tabular-nums text-stone-400">{{ String(i + 1).padStart(2, '0') }}</span>
+          <img
+            v-if="showListThumbs"
+            :src="`/images/${sketch.pathname}`"
+            :alt="sketch.name"
+            loading="lazy"
+            draggable="false"
+            class="aspect-[4/3] h-14 shrink-0 rounded-md object-cover ring-1 ring-stone-900/10"
+          />
           <div
             class="flex min-w-0 items-center gap-3 sm:gap-5"
             @mouseenter="previewDimmed = true"

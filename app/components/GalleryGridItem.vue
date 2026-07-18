@@ -18,21 +18,21 @@ const props = defineProps<{
 
 const { isLiked, toggleLike, like } = useSketchLikes()
 
-// Double-click the drawing → Instagram-style heart burst at the click point
+// Double-click / double-tap the drawing → Instagram-style heart burst at the tap point
 const frame = ref<HTMLElement>()
 const bursts = ref<{ id: number, x: number, y: number }[]>([])
 let burstId = 0
 
-function onDoubleClick(event: MouseEvent) {
+const { onDoubleClick, onTouchEnd } = useDoubleTap((point) => {
   const rect = frame.value?.getBoundingClientRect()
   if (!rect) return
   const id = ++burstId
-  bursts.value.push({ id, x: event.clientX - rect.left, y: event.clientY - rect.top })
+  bursts.value.push({ id, x: point.clientX - rect.left, y: point.clientY - rect.top })
   like(props.sketch)
   window.setTimeout(() => {
     bursts.value = bursts.value.filter(b => b.id !== id)
   }, 850)
-}
+})
 </script>
 
 <template>
@@ -43,7 +43,7 @@ function onDoubleClick(event: MouseEvent) {
     :viewport="{ once: true, margin: '-60px' }"
     :transition="{ type: 'spring', duration: 0.65, bounce: 0.15, delay: index < 4 ? index * 0.06 : 0 }"
   >
-    <div ref="frame" class="relative cursor-pointer" @dblclick="onDoubleClick">
+    <div ref="frame" class="relative cursor-pointer touch-manipulation" @dblclick="onDoubleClick" @touchend="onTouchEnd">
       <SketchFrame :src="`/images/${sketch.pathname}`" :alt="sketch.name" />
       <AnimatePresence>
         <motion.div
