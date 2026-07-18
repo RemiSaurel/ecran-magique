@@ -120,9 +120,18 @@ export function composeToyCanvas(source: HTMLCanvasElement): HTMLCanvasElement {
   return out
 }
 
-export function canvasToPngBlob(canvas: HTMLCanvasElement): Promise<Blob> {
+/**
+ * Compact image export for uploads: WebP shrinks a sketch from ~1.3MB (PNG)
+ * to ~30KB. Browsers that can't encode WebP silently fall back to PNG per
+ * spec — check blob.type to know which one you got.
+ */
+export function canvasToImageBlob(canvas: HTMLCanvasElement): Promise<Blob> {
   return new Promise((resolve, reject) =>
-    canvas.toBlob((b) => (b ? resolve(b) : reject(new Error('PNG export failed'))), 'image/png'),
+    canvas.toBlob(
+      (b) => (b ? resolve(b) : reject(new Error('Image export failed'))),
+      'image/webp',
+      0.85,
+    ),
   )
 }
 

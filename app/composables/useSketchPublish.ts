@@ -1,4 +1,4 @@
-import { canvasToPngBlob } from '~/utils/sketchExport'
+import { canvasToImageBlob } from '~/utils/sketchExport'
 
 /**
  * Publishing a sketch to the online gallery: dialog state, upload,
@@ -18,10 +18,10 @@ export function useSketchPublish(getScreenCanvas: () => HTMLCanvasElement | null
     publishing.value = true
     publishError.value = ''
     try {
-      const image = await canvasToPngBlob(screen)
+      const image = await canvasToImageBlob(screen)
       const form = new FormData()
       form.append('name', name)
-      form.append('image', image, 'sketch.png')
+      form.append('image', image, image.type === 'image/webp' ? 'sketch.webp' : 'sketch.png')
       await $fetch('/api/sketches', { method: 'POST', body: form })
       sounds.pop(1.15)
       haptics.tick()
