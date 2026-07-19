@@ -42,7 +42,7 @@ function submit() {
           :exit="{ opacity: 0, scale: 0.96, y: 8 }"
           :transition="{ type: 'spring', stiffness: 400, damping: 30 }"
         >
-          <h2 class="text-base font-semibold text-stone-800">Share to the gallery</h2>
+          <h2 class="text-base font-semibold text-stone-800">Publish to the gallery</h2>
           <p class="mt-1 text-sm text-stone-500">Name your sketch — it will be visible to everyone.</p>
 
           <form class="mt-4 flex flex-col gap-3" @submit.prevent="submit">

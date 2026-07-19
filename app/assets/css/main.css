@@ -8,7 +8,7 @@ body {
 }
 
 @theme {
-  --font-logo: "Snell Roundhand", "Brush Script MT", "Segoe Script", cursive;
+  --font-logo: "Gorditas", system-ui, sans-serif;
   --color-etch-red: #e02718;
   --color-etch-red-deep: #b81208;
   --color-etch-gold: #ffd23f;

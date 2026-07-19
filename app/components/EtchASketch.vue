@@ -2,10 +2,9 @@
 import { motion, useReducedMotion } from 'motion-v'
 import EtchKnob from './EtchKnob.vue'
 import { ETCH_PALETTE, KNOB_SENSITIVITY, STROKE_SIZES } from '~/utils/etch'
-import { composeScreenCanvas, composeToyCanvas, downloadCanvasPng } from '~/utils/sketchExport'
+import { composeScreenCanvas } from '~/utils/sketchExport'
 
 const prefersReduced = useReducedMotion()
-const haptics = useHaptics()
 const sounds = useToySounds()
 const soundOn = sounds.enabled
 
@@ -44,13 +43,6 @@ const { shareOpen, publishing, publishError, publish } = useSketchPublish(() =>
   canvasRef.value ? composeScreenCanvas(canvasRef.value) : null,
 )
 
-// Save the whole toy as a PNG
-function saveSketch() {
-  if (!canvasRef.value) return
-  downloadCanvasPng(composeToyCanvas(canvasRef.value), 'ecran-magique.png')
-  haptics.tick()
-  sounds.pop(1.1)
-}
 </script>
 
 <template>
@@ -125,7 +117,7 @@ function saveSketch() {
             :transition="{ duration: 0.6, delay: 0.55 }"
           >
             <span
-              class="font-logo block truncate text-[clamp(1rem,4.6vw,2.4rem)] leading-tight font-bold text-etch-gold italic"
+              class="font-logo block truncate text-[clamp(0.75rem,3.4vw,1.75rem)] leading-tight font-bold text-etch-gold"
               style="text-shadow: 0 2px 0 rgba(110, 15, 4, 0.75), 0 4px 10px rgba(0, 0, 0, 0.3)"
             >
               Écran Magique
@@ -193,21 +185,13 @@ function saveSketch() {
           </template>
           Shake to erase
         </EtchPillButton>
-        <EtchPillButton @click="saveSketch">
-          <template #icon>
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-            <polyline points="7 10 12 15 17 10" />
-            <line x1="12" y1="15" x2="12" y2="3" />
-          </template>
-          Save
-        </EtchPillButton>
         <EtchPillButton @click="shareOpen = true">
           <template #icon>
             <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
             <polyline points="16 6 12 2 8 6" />
             <line x1="12" y1="2" x2="12" y2="15" />
           </template>
-          Share
+          Publish
         </EtchPillButton>
         <EtchPillButton to="/gallery" ghost>
           <template #icon>
@@ -220,10 +204,14 @@ function saveSketch() {
       </div>
 
       <EtchShareDialog v-model:open="shareOpen" :publishing="publishing" :error="publishError" @publish="publish" />
-      <p class="max-w-[90vw] text-center text-xs text-stone-500/90">
-        <span class="pointer-coarse:hidden">Turn the knobs · Arrow keys · Draw on the screen · Grab the toy &amp; shake it</span>
-        <span class="hidden pointer-coarse:inline">Spin the knobs with your thumbs · Draw with a finger · Grab the toy &amp; shake it</span>
-      </p>
+      <a
+        href="https://github.com/RemiSaurel/ecran-magique"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-xs text-stone-500/90 underline underline-offset-2 hover:text-stone-500"
+      >
+        View on GitHub
+      </a>
     </motion.div>
   </div>
 </template>

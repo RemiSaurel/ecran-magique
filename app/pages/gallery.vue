@@ -99,7 +99,7 @@ function timeAgo(value: string) {
       :transition="{ duration: 0.4 }"
     >
       <div>
-        <h1 class="font-logo text-4xl font-bold text-etch-red italic">The Gallery</h1>
+        <h1 class="font-logo text-4xl font-bold text-etch-red">The Gallery</h1>
         <p class="mt-1 text-sm text-stone-500">Sketches shared by everyone, freshest first.</p>
       </div>
       <div class="flex items-center gap-3">
