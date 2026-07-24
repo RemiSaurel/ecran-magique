@@ -14,6 +14,7 @@ export default eventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'Missing image' })
   }
   ensureBlob(image, { maxSize: '4MB', types: ['image/webp', 'image/png'] })
+  await verifySketchImage(image)
 
   const stored = await blob.put(`${crypto.randomUUID()}.${image.type === 'image/webp' ? 'webp' : 'png'}`, image, {
     prefix: 'sketches',
